@@ -10,46 +10,37 @@ const Inputs = ({ setQuery, setUnits }) => {
   };
 
   return (
-    <View style={styles.inputContainer}>
+    <View className=' flex flex-row items-center justify-center space-x-10 text-sm py-3 my-3'>
       <TextInput
         value={city}
         onChangeText={setCity}
         placeholder="Search by city..."
         style={styles.input}
+        
       />
       <TouchableOpacity onPress={handleSearchClick}>
         <Ionicons name="search" size={30} color="white" />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => setUnits('metric')}>
-        <Text style={styles.unitButton}>°C</Text>
+        <Text className='text-2xl font-semibold text-white'>°C</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => setUnits('imperial')}>
-        <Text style={styles.unitButton}>°F</Text>
+        <Text className='text-2xl font-semibold text-white'>°F</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  inputContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginVertical: 20,
-  },
-  input: {
-    height: 40,
-    width: 200,
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    paddingLeft: 10,
-    marginRight: 10,
-  },
-  unitButton: {
-    color: 'white',
-    fontSize: 18,
-    marginHorizontal: 5,
-  },
+    input: {
+        height: 40,
+        width: 200,
+        backgroundColor: '#fff',
+        borderRadius: 5,
+        paddingLeft: 10,
+        marginRight: 10,
+      },
 });
+ 
 
 export default Inputs;

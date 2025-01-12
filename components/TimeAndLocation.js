@@ -21,20 +21,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 20,
+    color: "white"
   },
   timeContainer: {
     marginBottom: 12,
+    color: "white"
   },
   timeText: {
     fontSize: 18,
     fontWeight: '300', // Extra light font weight
+    color: "white"
   },
   locationContainer: {
     marginBottom: 6,
+    color: "white"
   },
   locationText: {
     fontSize: 24,
     fontWeight: '500', // Medium font weight
+    color: "white"
   },
 });
 

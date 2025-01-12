@@ -53,14 +53,10 @@ export default function App() {
   // };
 
   return (
-    <GestureHandlerRootView className='flex bg-[#42215a] text-white'> 
+    <GestureHandlerRootView className='flex bg-[#42215a] '> 
       <ScrollView >
-      <View >
-        <ImageBackground
-          // source={getBackgroundImage()} // Use dynamic background
-          
-          resizeMode="cover"
-        >
+      <View className='flex bg-[#42215a] text-[white] p-4' >
+       
           <Inputs setQuery={setQuery} setUnits={setUnits} />
           {weather && (
             <>
@@ -68,12 +64,12 @@ export default function App() {
               <Temp weather={weather} />
               <Forecast title="3 hour step forecast" data={weather.hourly} />
               <Forecast title="daily forecast" data={weather.daily} />
-              <View >
-                <Text >Coded By Thandeka Portia P Mazibuko</Text>
+              <View className='m-3' >
+                <Text className='text-white text-sm align-text-bottom ' >Coded By Thandeka Portia P Mazibuko</Text>
               </View>
             </>
           )}
-        </ImageBackground>
+    
       </View>
     </ScrollView>
     </GestureHandlerRootView>
