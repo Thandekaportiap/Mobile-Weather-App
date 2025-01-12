@@ -1,59 +1,104 @@
-import { View, Text, ScrollView } from 'react-native';
-import { useState, useEffect } from 'react';
-import * as Location from 'expo-location';
+import React, { useEffect, useState } from 'react';
+import { View, Text, ImageBackground, StyleSheet, Button } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Inputs from '../../components/Inputs';
+import TimeAndLocation from '../../components/TimeAndLocation';
+import Temp from '../../components/Temp';
+import Forecast from '../../components/Forecast';
+import getFormattedWeatherData from '../services/weather';
+import * as Location from 'expo-location'; // Location API
 
-export default function WeatherScreen() {
-  const [currentLocation, setCurrentLocation] = useState(null);
-  const [weatherData, setWeatherData] = useState(null);
+// Assets (Make sure you have these images or other assets)
+// import defaultBackground from '../../assets/defaultBackground.jpg'; // Example, adjust as needed
+// import coldBackground from '../../assets/coldBackground.jpg'; // Example, adjust as needed
+// import warmBackground from '../../assets/warmBackground.jpg'; // Example, adjust as needed
 
-  useEffect(() => {
-    requestLocationPermission();
-  }, []);
+export default function App() {
+  const [query, setQuery] = useState({ q: 'pietermaritzburg' });
+  const [units, setUnits] = useState('metric');
+  const [weather, setWeather] = useState(null);
+  const [locationPermission, setLocationPermission] = useState(false);
 
-  const requestLocationPermission = async () => {
-    try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status === 'granted') {
-        const location = await Location.getCurrentPositionAsync({});
-        setCurrentLocation(location);
-        fetchWeatherData(location.coords);
-      }
-    } catch (error) {
-      console.error('Error getting location:', error);
+  const getWeather = async () => {
+    const data = await getFormattedWeatherData({ ...query, units });
+    setWeather(data);
+  };
+
+  const getLocationPermission = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync(); // Corrected to request foreground permission
+    setLocationPermission(status === 'granted');
+  };
+
+  const handleLocationClick = async () => {
+    if (locationPermission) {
+      const { coords } = await Location.getCurrentPositionAsync(); // Use expo-location API here
+      const { latitude, longitude } = coords;
+      setQuery({ lat: latitude, lon: longitude });
+      await getWeather();
     }
   };
 
-  const fetchWeatherData = async (coords) => {
-    // Implement weather API call
-  };
+  useEffect(() => {
+    getWeather();
+    getLocationPermission();
+  }, [query, units]);
+
+  // const getBackgroundImage = () => {
+  //   if (!weather) return defaultBackground;
+
+  //   const threshold = units === 'metric' ? 20 : 60;
+  //   if (weather.temp <= threshold) return coldBackground;
+  //   return warmBackground;
+  // };
 
   return (
-    <View className="flex-1 bg-white">
-      <ScrollView className="p-4">
-        {/* Current Weather */}
-        <View className="bg-[#42215a] rounded-lg p-6 mb-4">
-          <Text className="text-white text-2xl font-bold">Current Weather</Text>
-          {weatherData && (
-            <View className="mt-4">
-              <Text className="text-white text-4xl">22°C</Text>
-              <Text className="text-white mt-2">Humidity: 65%</Text>
-              <Text className="text-white">Wind: 12 km/h</Text>
-            </View>
+    <GestureHandlerRootView className='flex bg-[#42215a] text-white'> 
+      <ScrollView >
+      <View >
+        <ImageBackground
+          // source={getBackgroundImage()} // Use dynamic background
+          
+          resizeMode="cover"
+        >
+          <Inputs setQuery={setQuery} setUnits={setUnits} />
+          {weather && (
+            <>
+              <TimeAndLocation weather={weather} />
+              <Temp weather={weather} />
+              <Forecast title="3 hour step forecast" data={weather.hourly} />
+              <Forecast title="daily forecast" data={weather.daily} />
+              <View >
+                <Text >Coded By Thandeka Portia P Mazibuko</Text>
+              </View>
+            </>
           )}
-        </View>
-
-        {/* Hourly Forecast */}
-        <Text className="text-[#42215a] text-xl font-bold mb-2">Hourly Forecast</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-4">
-          {/* Add hourly forecast items */}
-        </ScrollView>
-
-        {/* Daily Forecast */}
-        <Text className="text-[#42215a] text-xl font-bold mb-2">7-Day Forecast</Text>
-        <View className="bg-gray-50 rounded-lg p-4">
-          {/* Add daily forecast items */}
-        </View>
-      </ScrollView>
-    </View>
+        </ImageBackground>
+      </View>
+    </ScrollView>
+    </GestureHandlerRootView>
   );
 }
+
+// const styles = StyleSheet.create({
+//   scrollView: {
+//     flex: 1,
+//   },
+//   container: {
+//     flex: 1,
+//   },
+//   backgroundImage: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   footerContainer: {
+//     padding: 20,
+//     marginTop: 20,
+//   },
+//   footerText: {
+//     fontSize: 16,
+//     color: '#fff',
+//     textAlign: 'center',
+//   },
+// });
